@@ -338,7 +338,7 @@ impl From<ChurchWindowsRecord> for WorkingListEntry {
                 } else if cs.len() != 2 {
                     panic!("cs: {:?}, cwr: {:?}", cs, cwr);
                 } else {
-                    (cs[0].to_owned(), cs[1].trim().to_owned())
+                    (cs[1].to_owned(), cs[0].trim().to_owned())
                 }
             }
         };
