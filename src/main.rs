@@ -14,11 +14,18 @@ struct Opts {
 
     #[structopt(short, long, parse(from_os_str))]
     output_csv: PathBuf,
+
+    #[structopt(short, long, parse(try_from_str = regex::Regex::new), default_value = "/^")]
+    filter_names: regex::Regex,
 }
 
 // 	Alumni Last Name	Alumni First Name	Member Status	Family Position	Has a Pledge	Spouse First Name	Email	Phone Number	Cell Phone	Street Address	Street  2	City	State	Zip	Source	Last updated	Notes	Referred By	Membership date	Time Away	Pastoral	Virtual	In Person	RE Family	Constant Contact Y/N	Social Justice	Operating Budget	Capital Campaign					
 #[derive(Serialize, Deserialize, Debug, PartialOrd, Ord, PartialEq, Eq)]
 struct WorkingListEntry {
+    // need a field for the names in the first column. lets just call it "admin" and call it a day
+    #[serde(rename = "admin")]
+    admin: String,
+
     #[serde(rename = "Alumni Last Name")]
     name_last: String,
     #[serde(rename = "Alumni First Name")]
@@ -273,6 +280,8 @@ fn read_onrealm(onrealm_csv_path: &Path) -> Result<Vec<OnrealmRecord>, Box<dyn s
 impl From<OnrealmRecord> for WorkingListEntry {
     fn from(orr: OnrealmRecord) -> Self {
         Self {
+            admin: "auto".to_owned(),
+
             // NOTE: orr includes duplicate name_last_2 and name_first_2, which we're ignoring
             name_first: orr.name_first,
             name_last: orr.name_last,
@@ -334,6 +343,8 @@ impl From<ChurchWindowsRecord> for WorkingListEntry {
             }
         };
         Self {
+            admin: "auto".to_owned(),
+
             name_first: cwr.name_first,
             name_last: cwr.name_last,
 
@@ -413,7 +424,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let mut out = csv::Writer::from_path(opts.output_csv)?;
 
-    for (_, v) in all {
+    for ((name_last, _), v) in all {
+        if opts.filter_names.is_match(&name_last) {
+            continue;
+        }
         out.serialize(v)?;
     }
 

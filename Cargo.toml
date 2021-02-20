@@ -9,3 +9,4 @@ license = "AGPL3-or-later"
 csv = "*"
 structopt = "*"
 serde = { version = "*", features = ["derive"] }
+regex = "1"
