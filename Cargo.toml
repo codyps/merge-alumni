@@ -1,0 +1,11 @@
+[package]
+name = "merge-alumni"
+version = "0.1.0"
+authors = ["Cody P Schafer <dev@codyps.com>"]
+edition = "2018"
+license = "AGPL3-or-later"
+
+[dependencies]
+csv = "*"
+structopt = "*"
+serde = { version = "*", features = ["derive"] }
