@@ -330,14 +330,22 @@ impl From<ChurchWindowsRecord> for WorkingListEntry {
             if cs.is_empty() {
                 ("".to_owned(), "".to_owned())
             } else {
+                // FIXME: some entries include a comma between the city and the state
                 let cs: Vec<&str> = cs.rsplitn(2, " ").collect();
                 if cs.len() == 1 {
                     // probably just a town (state omitted)
                     // state is _probably_ NJ, but lets just leave it unset
+                    //
+                    // FIXME: some entries omit the state instead of the city.
                     (cs[0].to_owned(), "".to_owned())
                 } else if cs.len() != 2 {
                     panic!("cs: {:?}, cwr: {:?}", cs, cwr);
                 } else {
+                    // FIXME: we're assuming we've got a state and a city, but we might have a city
+                    // which has a space in it. Solution is probably trying to recognize state
+                    // names.
+                    //
+                    // FIXME: some entries include a zip code following the state
                     (cs[1].to_owned(), cs[0].trim().to_owned())
                 }
             }
