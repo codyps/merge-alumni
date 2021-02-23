@@ -49,6 +49,12 @@ struct WorkingListEntry {
     #[serde(rename = "Cell Phone")]
     cell_phone: String,
 
+    #[serde(rename = "Street Address")]
+    street: String,
+
+    #[serde(rename = "Street 2")]
+    street2: String,
+
     #[serde(rename = "City")]
     city: String,
     #[serde(rename = "State")]
@@ -299,6 +305,8 @@ impl From<OnrealmRecord> for WorkingListEntry {
             cell_phone: orr.mobile_phone,
             phone_number: orr.primary_phone_number,
 
+            street: orr.addr_line_1,
+            street2: orr.addr_line_2,
             city: orr.addr_city,
             state: orr.addr_state,
             zip: orr.postal_code,
@@ -369,6 +377,8 @@ impl From<ChurchWindowsRecord> for WorkingListEntry {
             cell_phone: cwr.cell_phone,
             phone_number: cwr.home_phone,
 
+            street: cwr.addr1,
+            street2: cwr.addr2,
             city,
             state,
             zip: cwr.zip,
